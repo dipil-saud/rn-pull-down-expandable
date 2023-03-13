@@ -1,0 +1,17 @@
+{
+  "name": "rn-pull-down-expandable",
+  "version": "1.0.0",
+  "description": "React Native Component with a handle to allow adjusting component size",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-native": "0.71.3",
+    "react-native-gesture-handler": "~2.9.0",
+    "react-native-reanimated": "~2.14.4"
+  },
+  "author": "Dipil Singh Saud",
+  "license": "ISC"
+}
