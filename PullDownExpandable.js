@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -52,16 +52,39 @@ export default function PullDownExpandable({
     height: height.value,
   }));
 
+  const { width: screenWidth } = useWindowDimensions();
+  const positionLeft = useSharedValue(0);
+  const animatedWidthStyle = useAnimatedStyle(() => ({
+    left: positionLeft.value,
+  }));
   const swipeGesture = Gesture.Pan()
     .onEnd((e) => {
-      if (e.translationX > 150) runOnJS(onSwipeRight)();
-      if (e.translationX < -150) runOnJS(onSwipeLeft)();
+      if (e.translationX > 100) {
+        positionLeft.value = withTiming(0 - screenWidth, {
+          duration: 200,
+        }, () => {
+          runOnJS(onSwipeRight)();
+          positionLeft.value = withTiming(0, {
+            duration: 100,
+          });
+        });
+      }
+      if (e.translationX < -100) {
+        positionLeft.value = withTiming(screenWidth, {
+          duration: 200,
+        }, () => {
+          runOnJS(onSwipeLeft)();
+          positionLeft.value = withTiming(0, {
+            duration: 100,
+          });
+        });
+      }
     });
 
   return (
     <View style={{ flex: 1 }}>
       <GestureDetector gesture={swipeGesture}>
-        <Animated.View style={[{ overflow: "hidden" }, animatedHeightStyle]}>
+        <Animated.View style={[{ overflow: "hidden", height: startHeight }, animatedHeightStyle, animatedWidthStyle]}>
           {children}
         </Animated.View>
       </GestureDetector>
